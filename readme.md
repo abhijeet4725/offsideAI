@@ -40,18 +40,14 @@ offsideAI/
    cd offsideAI
 ```
 
-2. Build the Project
+2. Build and Run the Project:
+The project comes with an execute.sh script that wraps the build (mvn clean install) and container startup (docker compose up).
+   
+Make it executable and run:
 ```
-mvn clean install -DskipTests
+chmod +x execute.sh
+./execute.sh
 ```
-
-3. Run with Docker Compose:
-```bash
-docker-compose up --build
-```
-
-
----
 
 ### Contributing
 Contributions are welcome. Fork this repository, create a feature branch, and submit a pull request.
