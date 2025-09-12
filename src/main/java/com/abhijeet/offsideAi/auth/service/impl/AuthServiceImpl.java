@@ -13,6 +13,8 @@ import com.abhijeet.offsideAi.user.domain.entities.User;
 import com.abhijeet.offsideAi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private final AuthMapper authMapper;
 
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -41,8 +45,32 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDto login(LoginRequestDto loginRequestDto) {
+        if (!userRepository.existsByEmail(loginRequestDto.getEmail())) {
+            throw new RuntimeException("User not found");
+        }
 
-        return null;
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDto.getEmail(),
+                        loginRequestDto.getPassword()
+                )
+        );
+
+        User user = userRepository.findByEmail(loginRequestDto.getEmail());
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail());
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+
+        AuthResponseDto response = new AuthResponseDto();
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(refreshToken.getToken());
+        response.setName(user.getName());
+
+        return response;
     }
 
     @Override

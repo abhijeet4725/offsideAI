@@ -1,6 +1,7 @@
 package com.abhijeet.offsideAi.auth.controller;
 
 import com.abhijeet.offsideAi.auth.domain.dtos.AuthResponseDto;
+import com.abhijeet.offsideAi.auth.domain.dtos.LoginRequestDto;
 import com.abhijeet.offsideAi.auth.domain.dtos.RegisterRequestDto;
 import com.abhijeet.offsideAi.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,10 @@ public class AuthController {
     @PostMapping("/register")
     public AuthResponseDto register(@RequestBody RegisterRequestDto registerRequestDto){
         return authService.register(registerRequestDto);
+    }
+
+    @PostMapping("/login")
+    public AuthResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
+        return authService.login(loginRequestDto);
     }
 }

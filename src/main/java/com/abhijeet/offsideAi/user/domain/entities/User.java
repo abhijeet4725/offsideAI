@@ -1,5 +1,6 @@
 package com.abhijeet.offsideAi.user.domain.entities;
 
+import com.abhijeet.offsideAi.auth.domain.entities.RefreshToken;
 import com.abhijeet.offsideAi.prompt.domain.entities.Prompt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -39,6 +40,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Prompt> prompts = new ArrayList<>();
+
+    @OneToOne
+    private RefreshToken refreshToken;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
