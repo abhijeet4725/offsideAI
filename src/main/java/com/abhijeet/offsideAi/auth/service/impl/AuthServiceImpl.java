@@ -23,21 +23,21 @@ import java.beans.Encoder;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private AuthMapper authMapper;
+    private final AuthMapper authMapper;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    private RefreshTokenService refreshTokenService;
+    private final RefreshTokenService refreshTokenService;
 
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public AuthResponseDto login(LoginRequestDto loginRequestDto) {
