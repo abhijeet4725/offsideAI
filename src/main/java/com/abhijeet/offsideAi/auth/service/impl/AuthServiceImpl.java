@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.beans.Encoder;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +97,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDto refresh(String refreshToken) {
-        return null;
+        RefreshToken refreshTokenEntity = refreshTokenService.findByToken(refreshToken)
+                .orElseThrow(() -> new RuntimeException("Token Not Valid"));
+
+        refreshTokenService.verifyExpiration(refreshTokenEntity);
+
+        User user = refreshTokenEntity.getUser();
+        String newAccessToken = jwtUtil.generateAccessToken(user.getEmail());
+
+        AuthResponseDto response = new AuthResponseDto();
+        response.setAccessToken(newAccessToken);
+        response.setRefreshToken(refreshTokenEntity.getToken());
+        response.setName(user.getName());
+
+        return response;
     }
 
     @Override
