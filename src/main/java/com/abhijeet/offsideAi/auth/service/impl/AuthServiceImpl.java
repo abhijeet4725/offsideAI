@@ -18,9 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.beans.Encoder;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -115,6 +112,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(LogoutRequestDto logoutRequestDto) {
+        RefreshToken refreshToken = refreshTokenService.findByToken(logoutRequestDto.getRefreshToken()).orElseThrow(() -> new RuntimeException("Token not found"));
 
+        User user =refreshToken.getUser();
+        refreshTokenService.deleteByUser(user);
     }
+
+
 }
